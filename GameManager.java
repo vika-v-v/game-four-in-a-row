@@ -6,7 +6,7 @@ public class GameManager  {
 	
 	public static void main(String[] args) {
 		
-		GameField field = new GameField();
+		GameField field = new GameField(200.0, 200.0, 6, 7, typeFigure.Circle);
 		field.drawField();
 
 		boolean pressed = false, allowNew = true;

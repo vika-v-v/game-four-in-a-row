@@ -8,6 +8,15 @@ enum typeFigure {
 
 public class GameField {
 	
+	public GameField(double x, double y, int amountX, int amountY, typeFigure figur) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.amountX = amountX;
+		this.amountY = amountY;
+		this.figur = figur;
+	}
+
 	double x = 200.0; 
 	double y = 200.0;
 	
@@ -17,7 +26,7 @@ public class GameField {
 	
 	typeFigure figur;
 	
-	int currentPlayer = 2;
+	int currentPlayer = 1;
 
 	int[] yRow; // amount of filled circles in a row
 	int[][] field; // field is filled with 0 - empty, 1 - first player and 2 - second player
@@ -87,7 +96,7 @@ public class GameField {
 					
 					if (analyseWin())
 					{
-						StdDraw.text(100, 190, "Player " + currentPlayer + " wins!");
+						StdDraw.text(100, 190, "Player " + (currentPlayer == 1 ? 2 : 1) + " wins!");
 					}
 					
 					break;
