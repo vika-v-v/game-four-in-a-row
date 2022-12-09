@@ -96,7 +96,7 @@ public class GameField {
 					
 					if (analyseWin())
 					{
-						StdDraw.text(100, 190, "Player " + (currentPlayer == 1 ? 2 : 1) + " wins!");
+						StdDraw.text(100, 190, "Player " + currentPlayer + " wins!");
 					}
 					
 					break;
@@ -104,6 +104,7 @@ public class GameField {
 
 			}
 		}
+		currentPlayer = currentPlayer == 1 ? 2 : 1;
 	}
 
 	private boolean analyseWin() {
@@ -205,7 +206,6 @@ public class GameField {
 			if (field[i][x] == 0) 
 			{
 				field[i][x] = currentPlayer;
-				currentPlayer = currentPlayer == 1 ? 2 : 1;
 				break;
 			}
 		}
