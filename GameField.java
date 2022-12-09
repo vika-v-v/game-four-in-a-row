@@ -107,7 +107,7 @@ public class GameField {
 	}
 
 	private boolean analyseWin() {
-		int points = 1;
+		int points;
 		
 		// check horisontal
 		for (int i = 0; i < field.length; i++) // row
@@ -122,9 +122,9 @@ public class GameField {
 		}
 		
 		// check vertical
-		points = 1;
 		for (int i = 0; i < field[0].length; i++) // column
 		{ 
+			points = 1;
 			for (int j = 1; j < field.length; j++) // cell
 			{ 
 				if (field[j][i] == field[j - 1][i] && field[j][i] != 0) points++;
