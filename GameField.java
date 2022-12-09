@@ -8,10 +8,8 @@ enum typeFigure {
 
 public class GameField {
 	
-	public GameField(double x, double y, int amountX, int amountY, typeFigure figur) {
+	public GameField(int amountX, int amountY, typeFigure figur) {
 		super();
-		this.x = x;
-		this.y = y;
 		this.amountX = amountX;
 		this.amountY = amountY;
 		this.figur = figur;
@@ -32,6 +30,7 @@ public class GameField {
 	int[][] field; // field is filled with 0 - empty, 1 - first player and 2 - second player
 	
 	double size = 2.0; // size of the single item (circle on a field)
+	boolean isEnded = false;
 
 	public void drawField() {
 
@@ -72,14 +71,11 @@ public class GameField {
 
 	public void moveMade(double xPos, double yPos) {
 		
-		if(analyseWin()) return; // don't allow moves after finished
 		
 		// in order to calculate position to fill, field schould be iterated one more time
 		double slothX = x / (amountX + 1);
 		double slothY = y / (amountY + 1);
 		size = Math.min(slothX, slothY);
-
-		StdDraw.setPenColor(StdDraw.getPenColor() == StdDraw.PINK ? StdDraw.ORANGE : StdDraw.PINK);
 
 		for (int i = 1; i <= amountX; i++) 
 		{
@@ -88,8 +84,11 @@ public class GameField {
 				// check if position of mouse click is inside the circle
 				if (xPos > i * slothX - size / 3 && xPos < i * slothX + size / 3
 						&& yPos < j * slothY + size / 3 && yPos > j * slothY - size / 3
-						&& yRow[i - 1] < amountX - 1) 
+						&& yRow[i - 1] < amountX - 1 && !isEnded) 
 				{
+					if(currentPlayer == 1) StdDraw.setPenColor(StdDraw.PINK);
+					else StdDraw.setPenColor(StdDraw.ORANGE);
+					
 					yRow[i - 1]++; // calculate at witch height to draw next move
 					StdDraw.filledCircle(i * slothX, yRow[i - 1] * slothY, size / 3);
 					fillBoardArray(i - 1); // fill array with board
@@ -97,14 +96,16 @@ public class GameField {
 					if (analyseWin())
 					{
 						StdDraw.text(100, 190, "Player " + currentPlayer + " wins!");
+						isEnded = true;
 					}
 					
+					currentPlayer = currentPlayer == 1 ? 2 : 1;
 					break;
 				}
 
 			}
 		}
-		currentPlayer = currentPlayer == 1 ? 2 : 1;
+		
 	}
 
 	private boolean analyseWin() {
@@ -113,11 +114,11 @@ public class GameField {
 		// check horisontal
 		for (int i = 0; i < field.length; i++) // row
 		{
-			points = 1;
-			for (int j = 1; j < field[0].length; j++) // cell
+			points = 0;
+			for (int j = 0; j < field[0].length; j++) // cell
 			{
-				if (field[i][j] == field[i][j - 1] && field[i][j] != 0) points++;
-				if (field[i][j - 1] == 0 || field[i][j] != field[i][j - 1]) points = 1;
+				if (field[i][j] == currentPlayer) points++;
+				if (field[i][j] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 		}
@@ -125,11 +126,11 @@ public class GameField {
 		// check vertical
 		for (int i = 0; i < field[0].length; i++) // column
 		{ 
-			points = 1;
-			for (int j = 1; j < field.length; j++) // cell
+			points = 0;
+			for (int j = 0; j < field.length; j++) // cell
 			{ 
-				if (field[j][i] == field[j - 1][i] && field[j][i] != 0) points++;
-				if (field[j - 1][i] == 0 || field[j - 1][i] != field[j][i]) points = 1;
+				if (field[j][i] == currentPlayer) points++;
+				if (field[j][i] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 
@@ -139,22 +140,22 @@ public class GameField {
 		// caclulated using the main diagonal and parallel, the parallel is defined by shift
 		for(int shift = 0; shift < field.length - 3; shift++) // shift to the right
 		{
-			points = 1;
-			for (int i = 1 + shift, j = 1; i < field.length && j < field[0].length; i++, j++) 
+			points = 0;
+			for (int i = shift, j = 0; i < field.length && j < field[0].length; i++, j++) 
 			{
-				if (field[i][j] == field[i - 1][j - 1] && field[i - 1][j - 1] != 0) points++;
-				if (field[i - 1][j - 1] == 0 || field[i - 1][j - 1] != field[i][j]) points = 1;
+				if (field[i][j] == currentPlayer) points++;
+				if (field[i][j] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 		}
 		
 		for(int shift = 0; shift < field[0].length - 3; shift++) // shift to the up
 		{
-			points = 1;
-			for (int i = 1, j = 1 + shift; i < field.length && j < field[0].length; i++, j++) 
+			points = 0;
+			for (int i = 0, j = shift; i < field.length && j < field[0].length; i++, j++) 
 			{
-				if (field[i][j] == field[i - 1][j - 1] && field[i - 1][j - 1] != 0) points++;
-				if (field[i - 1][j - 1] == 0 || field[i - 1][j - 1] != field[i][j]) points = 1;
+				if (field[i][j] == currentPlayer) points++;
+				if (field[i][j] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 		
@@ -164,22 +165,22 @@ public class GameField {
 		// caclulated using the secondary diagonal and parallel, the parallel is defined by shift
 		for(int shift = 0; shift < field.length - 3; shift++) // shift down
 		{
-			points = 1;
-			for (int i = field.length - 2 - shift, j = 1; i >= 0 && j < field[0].length; i--, j++) 
+			points = 0;
+			for (int i = field.length - 1 - shift, j = 0; i >= 0 && j < field[0].length; i--, j++) 
 			{
-				if (field[i][j] == field[i + 1][j - 1] && field[i + 1][j - 1] != 0) points++;
-				if (field[i + 1][j - 1] == 0 || field[i + 1][j - 1] != field[i][j]) points = 1;
+				if (field[i][j] == currentPlayer) points++;
+				if (field[i][j] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 		}
 		
 		for(int shift = 0; shift < field[0].length - 3; shift++) // shift to the left
 		{
-			points = 1;
-			for (int i = field.length - 2, j = 1 + shift; i >= 0 && j < field[0].length; i--, j++) 
+			points = 0;
+			for (int i = field.length - 1, j = shift; i >= 0 && j < field[0].length; i--, j++) 
 			{
-				if (field[i][j] == field[i + 1][j - 1] && field[i + 1][j - 1] != 0) points++;
-				if (field[i + 1][j - 1] == 0 || field[i + 1][j - 1] != field[i][j]) points = 1;
+				if (field[i][j] == currentPlayer) points++;
+				if (field[i][j] != currentPlayer) points = 0;
 				if (points == 4) return true;
 			}
 		}

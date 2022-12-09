@@ -1,12 +1,13 @@
 package FourInARow;
 
+
 import edu.princeton.cs.introcs.StdDraw;
 
 public class GameManager  {
 	
 	public static void main(String[] args) {
-				
-		GameField field = new GameField(200.0, 200.0, 7, 6, typeFigure.Circle);
+		GameField field = new GameField(7, 7, typeFigure.Circle);
+		
 		field.drawField();
 		
 
